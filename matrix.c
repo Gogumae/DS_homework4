@@ -67,12 +67,12 @@ void addition_matrix(int *arr1, int *arr2) {
 }
 
 void subtraction_matrix(int *arr1, int *arr2) {
-    int *addMatrix;
-    addMatrix = (int*)malloc(sizeof(int) * row * col);
+    int *subMatrix;
+    subMatrix = (int*)malloc(sizeof(int) * row * col);
 
     for(int i = 0; i < row * col; i++) {
-        addMatrix[i] = arr1[i] - arr2[i];
+        subMatrix[i] = arr1[i] - arr2[i];
     }
 
-    print_matrix(addMatrix);
+    print_matrix(subMatrix);
 }
