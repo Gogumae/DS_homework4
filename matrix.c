@@ -5,8 +5,8 @@
 void print_matirx(int *arr);
 void addition_matrix(int *arr1, int *arr2);
 void subtraction_matrix(int *arr1, int *arr2);
-//int transpose_matrix(arr);
-//int multiply_matrix(arr1, arr2);
+void transpose_matrix(arr);
+void multiply_matrix(arr1, arr2);
 
 int row, col;
 
@@ -37,9 +37,12 @@ void main() {
         scanf("%d", &matrixB[i]);
     }
 
+    printf("A행렬:\n");
     print_matrix(matrixA);
+    printf("B행렬:\n");
     print_matrix(matrixB);
     addition_matrix(matrixA, matrixB);
+    subtraction_matrix(matrixA, matrixB);
 }
 
 void print_matrix(int *arr) {
@@ -52,13 +55,14 @@ void print_matrix(int *arr) {
         }
         printf("\n");
     }
-    printf("\n");
+    printf("\n\n");
 }
 
 void addition_matrix(int *arr1, int *arr2) {
     int *addMatrix;
     addMatrix = (int*)malloc(sizeof(int) * row * col);
 
+    printf("A+B:\n");
     for(int i = 0; i < row * col; i++) {
         addMatrix[i] = arr1[i] + arr2[i];
     }
@@ -70,6 +74,7 @@ void subtraction_matrix(int *arr1, int *arr2) {
     int *subMatrix;
     subMatrix = (int*)malloc(sizeof(int) * row * col);
 
+    printf("A-B:\n");
     for(int i = 0; i < row * col; i++) {
         subMatrix[i] = arr1[i] - arr2[i];
     }
