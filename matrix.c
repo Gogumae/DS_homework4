@@ -19,7 +19,7 @@ void main() {
     //행렬의 행과 열의 수를 입력받음
     printf("행렬의 행 수를 입력하십시오. > ");
     scanf("%d", &row);
-    printf("\n행렬의 열 수를 입력하십시오. > ");
+    printf("\n행렬의 열 수를 입력하십시오. (행의 수와 같지 않으면 Multiply matrix를 구할 수 없습니다.)> ");
     scanf("%d", &col);
 
     //모든 행렬 선언 및 이차원 배열 메모리 동적 할당
@@ -37,28 +37,30 @@ void main() {
         matrixB[ma] = (int*)malloc(sizeof(int) * col);
     }
 
-    int** matrixAdd;  //Add Matrix A+B
+    int** matrixAdd;  //Add matrix A+B
     matrixAdd = (int**)malloc(sizeof(int) * row);
     for(ma = 0; ma < row; ma++) {
         matrixAdd[ma] = (int*)malloc(sizeof(int) * col);
     }
 
-    int** matrixSub;  //Subtract Matrix A-B
+    int** matrixSub;  //Subtract matrix A-B
     matrixSub = (int**)malloc(sizeof(int) * row);
     for(ma = 0; ma < row; ma++) {
         matrixSub[ma] = (int*)malloc(sizeof(int) * col);
     }
 
-    int** matrixT;  //Transpose Matrix matrixT
-    matrixT = (int**)malloc(sizeof(int) * col);
+    int** matrixT;  //Transpose matrix T
+    matrixT = (int**)malloc(sizeof(int) * col);  //전치행렬은 m*n 행렬을 n*m행렬로 위치를 바꾸는 행렬이기에 동적 메모리 할당에서 row와 col 위치 변경
     for(ma = 0; ma < row; ma++) {
         matrixT[ma] = (int*)malloc(sizeof(int) * row);
     }
 
-    int** matrixMul;  //Multiply Matrix A×B
-    matrixMul = (int**)malloc(sizeof(int) * row);
-    for(ma = 0; ma < row; ma++) {
-        matrixMul[ma] = (int*)malloc(sizeof(int) * col);
+    if(row==col) {
+        int** matrixMul;  //Multiply matrix A×B
+        matrixMul = (int**)malloc(sizeof(int) * row);
+        for(ma = 0; ma < row; ma++) {
+            matrixMul[ma] = (int*)malloc(sizeof(int) * col);
+        }
     }
     
     //반복문을 통해 A행렬, B행렬에 값을 입력 받음
@@ -92,9 +94,11 @@ void main() {
     printf("A행렬의 전치행렬 T\n");
     transpose_matrix(matrixA, matrixT);
     print_matrix(matrixT, col ,row);
-    printf("A×B\n");
-    //multiply_matrix(matrixA, matrixB, matrixMul);
-    //print_matrix(matrixMul, row, col);
+    if(row==col) {
+        //printf("A×B\n");
+        //multiply_matrix(matrixA, matrixB, matrixMul);
+        //print_matrix(matrixMul, row, col);
+    }
 
     //행렬들을 생성하기 위해 할당된 메모리를 반환
     free_matrix(matrixA, row);
@@ -119,9 +123,8 @@ void print_matrix(int **input, int row, int col) {
     printf("\n\n");
 }
 
-//Add Matrix A+B를 구현하는 함수
+//Add matrix A+B를 구현하는 함수
 //input1과 input2의 같은 위치에 있는 성분을 더하여 output의 같은 위치에 저장
-//call by reference 방식으로 output의 주소의 값을 직접 수정하기 때문에 return을 챙길 필요 없음
 void addition_matrix(int **input1, int **input2, int **output) {
     int or, oc;
     for(or = 0; or < row; or++) {
@@ -131,9 +134,8 @@ void addition_matrix(int **input1, int **input2, int **output) {
     }
 }
 
-//Subtract Matrix A-B를 구현하는 함수
+//Subtract matrix A-B를 구현하는 함수
 //input1과 input2의 같은 위치에 있는 성분을 빼서 output의 같은 위치에 저장
-//call by reference 방식으로 output의 주소의 값을 직접 수정하기 때문에 return을 챙길 필요 없음
 void subtraction_matrix(int **input1, int **input2, int **output) {
     int or, oc;
     for(or = 0; or < row; or++) {
@@ -143,6 +145,8 @@ void subtraction_matrix(int **input1, int **input2, int **output) {
     }
 }
 
+//Transpose matrix T를 구현하는 함수
+//input의 m행의 n열의 값을 output의 n행과 m열에 대입한다
 void transpose_matrix(int **input, int **output) {
     int or, oc;
     for(or = 0; or < row; or++) {
@@ -154,17 +158,20 @@ void transpose_matrix(int **input, int **output) {
 
 void multiply_matrix(int **input1, int **input2, int **output) {
     int or, oc;
+    int sum = 0;
     for(or = 0; or < row; or++) {
         for(oc = 0; oc < col; oc++) {
-            output[or][oc] = input1[or][oc] * input2[oc][or];
+            sum += input1[or][oc] * input2[oc][or];
         }
     }
 }
 
-void free_matrix(int **arr, int row) {
+//할당했던 메모리를 해제하는 함수
+//input의 row마다 할당했던 메모리를 먼저 반환하고, input의 메모리를 반환한다
+void free_matrix(int **input, int row) {
     for(int i = 0; i < row; i++) {
-        free(arr[i]);
+        free(input[i]);
     }
     
-    free(arr);
+    free(input);
 }
