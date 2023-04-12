@@ -33,6 +33,20 @@ void main() {
     for(int b = 0; b < row; b++) {
         matrixB[b] = (int*)malloc(sizeof(int) * col);
     }
+    
+    //반복문을 통해 행렬에 값을 입력 받음
+    //iar = Input matrixA Row, iac Input matrixA Column
+    for(int iar = 0; iar < row; iar++) {  //매 행마다
+    printf("A행렬의 %d행에 값을 입력합니다. %d개 숫자 입력 가능\n> ", iar + 1, col);
+        for(int iac = 0; iac < col; iac++) {  //매 열마다
+            scanf("%d", matrixA[iar][iac]);
+        }
+    }
 
-
+    for(int ibr = 0; ibr < row; ibr++) {  //매 행마다
+    printf("B행렬의 %d행에 값을 입력합니다. %d개 숫자 입력 가능\n> ", ibr + 1, col);
+        for(int ibc = 0; ibc < col; ibc++) {  //매 열마다
+            scanf("%d", matrixB[ibr][ibc]);
+        }
+    }
 }
