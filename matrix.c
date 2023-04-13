@@ -9,7 +9,7 @@ void transpose_matrix(int **input, int **output);
 void multiply_matrix(int **input1, int **input2, int **output);
 void free_matrix(int **arr, int row);
 
-//행렬의 행과 열의 수를 저장할 변수 선언
+//행렬의 행과 열의 수를 저장할 전역변수 선언
 int row, col;
 
 void main() {
@@ -17,6 +17,7 @@ void main() {
     printf("[----- [이찬희] [2019068057] -----]\n");
 
     //행렬의 행과 열의 수를 입력받음
+    //행렬의 덧셈과 뺄셈을 하기 위해선 A행렬과 B행렬의 모양이 같아야하기에 같은 row, col 변수 사용
     printf("행렬의 행 수를 입력하십시오. > ");
     scanf("%d", &row);
     printf("\n행렬의 열 수를 입력하십시오. (행의 수와 같지 않으면 Multiply matrix를 구할 수 없습니다.)> ");
@@ -55,12 +56,10 @@ void main() {
         matrixT[ma] = (int*)malloc(sizeof(int) * row);
     }
 
-    if(row==col) {
-        int** matrixMul;  //Multiply matrix A×B
-        matrixMul = (int**)malloc(sizeof(int) * row);
-        for(ma = 0; ma < row; ma++) {
-            matrixMul[ma] = (int*)malloc(sizeof(int) * col);
-        }
+    int** matrixMul;  //Multiply matrix A×B
+    matrixMul = (int**)malloc(sizeof(int) * row);
+    for(ma = 0; ma < row; ma++) {
+        matrixMul[ma] = (int*)malloc(sizeof(int) * col);
     }
     
     //반복문을 통해 A행렬, B행렬에 값을 입력 받음
@@ -94,10 +93,13 @@ void main() {
     printf("A행렬의 전치행렬 T\n");
     transpose_matrix(matrixA, matrixT);
     print_matrix(matrixT, col ,row);
+    printf("A×B\n");
     if(row==col) {
-        //printf("A×B\n");
-        //multiply_matrix(matrixA, matrixB, matrixMul);
-        //print_matrix(matrixMul, row, col);
+        multiply_matrix(matrixA, matrixB, matrixMul);
+        print_matrix(matrixMul, row, col);
+    }
+    else {
+        printf("A행렬의 열의 수와 B행렬의 행의 수가 같지 않아 A×B를 구현할 수 없습니다.\n");
     }
 
     //행렬들을 생성하기 위해 할당된 메모리를 반환
@@ -106,7 +108,7 @@ void main() {
     free_matrix(matrixAdd, row);
     free_matrix(matrixSub, row);
     free_matrix(matrixT, col);
-    //free_matrix(matrixMul, row);
+    free_matrix(matrixMul, row);
 }
 
 //행렬을 출력하는 함수
@@ -135,7 +137,7 @@ void addition_matrix(int **input1, int **input2, int **output) {
 }
 
 //Subtract matrix A-B를 구현하는 함수
-//input1과 input2의 같은 위치에 있는 성분을 빼서 output의 같은 위치에 저장
+//input1과 input2의 같은 위치에 있는 성분끼리 뺄셈을 하여 output의 같은 위치에 저장
 void subtraction_matrix(int **input1, int **input2, int **output) {
     int or, oc;
     for(or = 0; or < row; or++) {
@@ -156,12 +158,20 @@ void transpose_matrix(int **input, int **output) {
     }
 }
 
+//Multiply matrix A×B를 구현하는 함수
+//행렬의 곱 A×B의 성분 (m,n)은 A행렬의 m행의 성분과 B행렬의 n열의 성분을 각각 처음부터 차례대로 곱한 값을 모두 더한 것
+//다른 함수와 마찬가지로 or, oc 변수로 A×B행렬이 저장될 output배열의 한 성분을 지정
+//input1 배열에서 행을 고정, input2 배열에서 열을 고정한 후, 새로운 변수 o를 사용하여 순서대로 값을 찾아 곱한다
+//o가 row보다 작을때까지 (덧셈과 뺄셈을 구현하기 위해 A행렬과 B행렬의 모양이 같으므로, 곱셈이 가능하려면 row와 col이 같아야한다) 반복한 값을 모두 output[oc][or]에 더한다
 void multiply_matrix(int **input1, int **input2, int **output) {
-    int or, oc;
+    int or, oc, o;
     int sum = 0;
     for(or = 0; or < row; or++) {
         for(oc = 0; oc < col; oc++) {
-            sum += input1[or][oc] * input2[oc][or];
+            output[or][oc] = 0;
+            for(o = 0; o < row; o++) {
+                output[or][oc] += input1[or][o] * input2[o][oc];
+            }
         }
     }
 }
