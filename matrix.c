@@ -51,7 +51,7 @@ void main() {
     }
 
     int** matrixT;  //Transpose matrix T
-    matrixT = (int**)malloc(sizeof(int) * col);  //전치행렬은 m*n 행렬을 n*m행렬로 위치를 바꾸는 행렬이기에 동적 메모리 할당에서 row와 col 위치 변경
+    matrixT = (int**)malloc(sizeof(int) * col);  //전치행렬은 m*n 행렬을 n*m행렬로 위치를 바꾸므로 동적 메모리 할당에서 row와 col 위치 변경
     for(ma = 0; ma < row; ma++) {
         matrixT[ma] = (int*)malloc(sizeof(int) * row);
     }
@@ -84,16 +84,16 @@ void main() {
     print_matrix(matrixA, row, col);
     printf("B행렬:\n");
     print_matrix(matrixB, row, col);
-    printf("A+B\n");
+    printf("A+B:\n");
     addition_matrix(matrixA, matrixB, matrixAdd);
     print_matrix(matrixAdd, row, col);
-    printf("A-B\n");
+    printf("A-B:\n");
     subtraction_matrix(matrixA, matrixB, matrixSub);
     print_matrix(matrixSub, row, col);
-    printf("A행렬의 전치행렬 T\n");
+    printf("A행렬의 전치행렬 T:\n");
     transpose_matrix(matrixA, matrixT);
     print_matrix(matrixT, col ,row);
-    printf("A×B\n");
+    printf("A×B:\n");
     if(row==col) {
         multiply_matrix(matrixA, matrixB, matrixMul);
         print_matrix(matrixMul, row, col);
@@ -161,11 +161,10 @@ void transpose_matrix(int **input, int **output) {
 //Multiply matrix A×B를 구현하는 함수
 //행렬의 곱 A×B의 성분 (m,n)은 A행렬의 m행의 성분과 B행렬의 n열의 성분을 각각 처음부터 차례대로 곱한 값을 모두 더한 것
 //다른 함수와 마찬가지로 or, oc 변수로 A×B행렬이 저장될 output배열의 한 성분을 지정
-//input1 배열에서 행을 고정, input2 배열에서 열을 고정한 후, 새로운 변수 o를 사용하여 순서대로 값을 찾아 곱한다
-//o가 row보다 작을때까지 (덧셈과 뺄셈을 구현하기 위해 A행렬과 B행렬의 모양이 같으므로, 곱셈이 가능하려면 row와 col이 같아야한다) 반복한 값을 모두 output[oc][or]에 더한다
+//input1 배열에서 행을 고정, input2 배열에서 열을 고정한 후, 새로운 변수 o를 사용하여 순서대로 값(성분)을 찾아 곱한다
+//o가 row보다 작을때까지 (덧셈과 뺄셈을 구현하기 위해 A행렬과 B행렬의 모양이 같으므로, 곱셈이 가능하려면 row와 col이 같아야한다) 반복하면서 곱해진 값을 계속 output[oc][or]에 더한다
 void multiply_matrix(int **input1, int **input2, int **output) {
     int or, oc, o;
-    int sum = 0;
     for(or = 0; or < row; or++) {
         for(oc = 0; oc < col; oc++) {
             output[or][oc] = 0;
